@@ -24,7 +24,7 @@ const Input: React.FC<InputProps> = ({
     setShowPassword(!showPassword);
   };
 
-  // Получаем текст ошибки
+
   const errorMessage = typeof error === 'string' ? error : error?.message;
 
   return (
@@ -72,8 +72,7 @@ const Input: React.FC<InputProps> = ({
             ${className}
           `.trim()}
         />
-        
-        {/* Иконка toggle password */}
+      
         {isPassword && (
           <button
             type="button"

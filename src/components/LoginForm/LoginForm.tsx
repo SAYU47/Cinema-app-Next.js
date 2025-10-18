@@ -5,14 +5,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Input from "@/components/ui/Input/Input";
-import { loginSchema, LoginFormData } from "../../lib/validation-schema";
-import { useState } from "react";
-import CustomButton from "../ui/CustomButton/CustomButton";
+import { loginSchema, LoginFormData } from "@/lib/validation-schema";
+import CustomButton from "@/components/ui/CustomButton/CustomButton";
+import { useLoginMutation } from "@/hooks/apiHooks";
+import { useAuth } from '@/providers/AuthProvider';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [serverError, setServerError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
+  
+  // Используем мутацию из React Query
+  const loginMutation = useLoginMutation();
 
   const {
     register,
@@ -27,34 +30,30 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    setIsLoading(true);
-    setServerError("");
-
     try {
-      // Имитация API запроса
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Временная заглушка для демонстрации
-      if (data.username === "demo" && data.password === "demo123") {
-        localStorage.setItem("isAuthenticated", "true");
-        localStorage.setItem("username", data.username);
-        router.push("/my-tickets");
-      } else {
-        setServerError(
-          "Неверный логин или пароль. Проверьте введенные данные и попробуйте снова"
-        );
-      }
+      // Выполняем мутацию
+      const result = await loginMutation.mutateAsync(data);
+      console.log(result)
+      // Используем метод login из контекста для обновления глобального состояния
+      login(data.username, result.token);
+      
+      // Перенаправляем на страницу билетов после успешного входа
+      router.push("/my-tickets");
+      
     } catch (err) {
-      setServerError("Произошла ошибка при авторизации");
-    } finally {
-      setIsLoading(false);
+      // Ошибка обрабатывается автоматически в onError мутации
+      console.error('Login error:', err);
     }
   };
 
+  // Получаем состояние загрузки и ошибку из мутации
+  const isLoading = loginMutation.isPending;
+  const serverError = loginMutation.error?.message;
+
   return (
-    <div className="w-full ">
+    <div className="w-full">
       {/* Карточка */}
-      <div className="bg-white/10  bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 p-8">
+      <div className="bg-white/10 bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 p-8">
         {/* Заголовок */}
         <div className="text-center mb-8">
           <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg">
@@ -74,7 +73,7 @@ export default function LoginPage() {
             fullWidth
             placeholder="Введите ваш логин"
             className="bg-white/5 border-white/10 text-white placeholder-gray-400
-                       focus:border-purple-500 focus:ring-purple-500"
+                     focus:border-purple-500 focus:ring-purple-500"
           />
 
           {/* Поле password */}
@@ -86,12 +85,16 @@ export default function LoginPage() {
             fullWidth
             placeholder="Введите ваш пароль"
             className="bg-white/5 border-white/10 text-white placeholder-gray-400
-                       focus:border-purple-500 focus:ring-purple-500"
+                     focus:border-purple-500 focus:ring-purple-500"
           />
 
           {/* Кнопка отправки */}
-          <CustomButton type="submit" isLoading={isLoading}>
-            Вход
+          <CustomButton 
+            type="submit" 
+            isLoading={isLoading}
+            disabled={isLoading}
+          >
+            {isLoading ? "Вход..." : "Войти"}
           </CustomButton>
 
           {/* Ошибка сервера */}
@@ -113,17 +116,37 @@ export default function LoginPage() {
               </div>
             </div>
           )}
+
+          {/* Успешный вход */}
+          {loginMutation.isSuccess && (
+            <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-xl">
+              <div className="flex items-center gap-2 text-green-400">
+                <svg
+                  className="w-5 h-5 flex-shrink-0"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <span className="text-sm">Вход успешен! Перенаправляем...</span>
+              </div>
+            </div>
+          )}
         </form>
 
-        {/* Демо данные */}
+        {/* Демо данные (можно убрать после подключения реального API) */}
         <div className="mt-6 p-4 bg-white/5 rounded-xl border border-white/10">
-          <p className="text-gray-400 text-sm text-center">
+          <p className="text-gray-400 text-sm text-center mb-2">
             Для тестирования используйте:
-            <br />
-            <strong>username:</strong> demo
-            <br />
-            <strong>password:</strong> demo123
           </p>
+          <div className="text-gray-400 text-sm space-y-1 text-center">
+            <div><strong>username:</strong> demo</div>
+            <div><strong>password:</strong> demo123</div>
+          </div>
         </div>
 
         {/* Ссылка на регистрацию */}

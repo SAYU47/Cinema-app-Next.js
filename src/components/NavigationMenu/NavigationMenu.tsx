@@ -1,28 +1,42 @@
 'use client';
-
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useAuth } from '@/providers/AuthProvider';
 
 export default function NavigationMenu() {
   const pathname = usePathname();
+  const router = useRouter();
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const { isAuthorized, logout } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await logout(); 
+      router.push('/cinema/movies');
+    } catch (error) {
+      console.error('Ошибка при выходе:', error);
+    }
+  };
 
   const menuItems = [
     { href: '/cinema/movies', label: 'Фильмы', icon: '🎬' },
     { href: '/cinema/cinemas', label: 'Кинотеатры', icon: '🏛️' },
     { href: '/my-tickets', label: 'Мои билеты', icon: '🎫' },
-    { href: '/auth/login', label: 'Вход', icon: '👤' },
+    {
+      href: isAuthorized ? '#' : '/auth/login',
+      label: isAuthorized ? 'Выход' : 'Вход',
+      icon: isAuthorized ? '🚪' : '👤',
+      onClick: isAuthorized ? handleLogout : undefined,
+    },
   ];
 
-  // Проверяем, активен ли текущий путь
   const isActive = (href: string) => {
     return pathname === href || pathname.startsWith(href + '/');
   };
 
   return (
-    <div className="flex flex-col h-dvh  bg-gradient-to-b from-gray-900 to-gray-800 p-6 rounded-xl shadow-2xl border border-gray-700 min-w-[300px]">
-      {/* Заголовок */}
+    <div className="flex flex-col min-h-dvh bg-gradient-to-b from-gray-900 to-gray-800 p-6 rounded-xl shadow-2xl border border-gray-700 min-w-[300px]">
       <div className="mb-8 pb-4 border-b border-gray-700">
         <h2 className="text-xl font-bold text-white flex items-center gap-2">
           <span className="text-2xl">🍿</span>
@@ -30,12 +44,10 @@ export default function NavigationMenu() {
         </h2>
         <p className="text-gray-400 text-sm mt-1">Ваш киногид</p>
       </div>
-
-      {/* Навигация */}
       <nav className="space-y-2 flex-1">
         {menuItems.map((item) => {
           const active = isActive(item.href);
-          
+
           return (
             <Link
               key={item.href}
@@ -51,31 +63,23 @@ export default function NavigationMenu() {
               `}
               onMouseEnter={() => setHoveredItem(item.href)}
               onMouseLeave={() => setHoveredItem(null)}
+              onClick={item.onClick}
             >
-              {/* Иконка */}
               <span className={`
                 text-lg transition-transform duration-300
                 ${active || hoveredItem === item.href ? 'scale-110' : 'scale-100'}
               `}>
                 {item.icon}
               </span>
-              
-              {/* Текст */}
               <span className="font-medium transition-all duration-300">
                 {item.label}
               </span>
-
-              {/* Постоянный индикатор для активного элемента */}
               {active && (
                 <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-8 bg-blue-400 rounded-r-full" />
               )}
-
-              {/* Индикатор ховера для неактивных элементов */}
               {!active && hoveredItem === item.href && (
                 <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-6 bg-blue-500/50 rounded-r-full" />
               )}
-
-              {/* Стрелка для активного элемента */}
               {active && (
                 <svg
                   className="w-4 h-4 ml-auto transform rotate-90"

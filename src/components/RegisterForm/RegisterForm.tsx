@@ -6,19 +6,21 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Input from "@/components/ui/Input/Input";
 import { registerSchema, RegisterFormData } from "@/lib/validation-schema";
-import { useState } from "react";
 import CustomButton from "@/components/ui/CustomButton/CustomButton";
+import { useLoginMutation, useRegisterMutation } from "@/hooks/apiHooks";
+import { useAuth } from "@/providers/AuthProvider";
 
 export default function RegisterForm() {
   const router = useRouter();
-  const [serverError, setServerError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
 
+  // Используем мутацию из React Query
+  const registerMutation = useRegisterMutation();
+  const loginMutation = useLoginMutation();
   const {
     register,
     handleSubmit,
     formState: { errors },
-    watch
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -28,37 +30,23 @@ export default function RegisterForm() {
     },
   });
 
-  // Для отслеживания пароля (опционально, для кастомной валидации)
-  const passwordValue = watch("password");
-
   const onSubmit = async (data: RegisterFormData) => {
-    setIsLoading(true);
-    setServerError("");
-
     try {
-      // Имитация API запроса
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Временная заглушка для демонстрации
-      // Здесь будет реальная регистрация
-      localStorage.setItem("isAuthenticated", "true");
-      localStorage.setItem("username", data.username);
-      
-      // Перенаправляем на страницу билетов после успешной регистрации
+      await registerMutation.mutateAsync(data);
+      const result = await loginMutation.mutateAsync(data);
+      login(data.username, result.token);
       router.push("/my-tickets");
-      
     } catch (err) {
-      setServerError("Произошла ошибка при регистрации. Попробуйте позже.");
-    } finally {
-      setIsLoading(false);
+      console.error("Registration error:", err);
     }
   };
 
+  const isLoading = registerMutation.isPending;
+  const serverError = registerMutation.error?.message;
+
   return (
     <div className="w-full">
-      {/* Карточка */}
       <div className="bg-white/10 bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 p-8">
-        {/* Заголовок */}
         <div className="text-center mb-8">
           <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-blue-500 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg">
             🎭
@@ -67,9 +55,7 @@ export default function RegisterForm() {
           <p className="text-gray-300">Создайте новый аккаунт</p>
         </div>
 
-        {/* Форма */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* Поле username */}
           <Input
             label="Логин"
             {...register("username")}
@@ -80,7 +66,6 @@ export default function RegisterForm() {
                      focus:border-purple-500 focus:ring-purple-500"
           />
 
-          {/* Поле password */}
           <Input
             label="Пароль"
             type="password"
@@ -92,7 +77,6 @@ export default function RegisterForm() {
                      focus:border-purple-500 focus:ring-purple-500"
           />
 
-          {/* Поле confirmPassword */}
           <Input
             label="Повторите пароль"
             type="password"
@@ -104,12 +88,14 @@ export default function RegisterForm() {
                      focus:border-purple-500 focus:ring-purple-500"
           />
 
-          {/* Кнопка отправки */}
-          <CustomButton type="submit" isLoading={isLoading}>
-            Зарегистрироваться
+          <CustomButton
+            type="submit"
+            isLoading={isLoading}
+            disabled={isLoading}
+          >
+            {isLoading ? "Регистрация..." : "Зарегистрироваться"}
           </CustomButton>
 
-          {/* Ошибка сервера */}
           {serverError && (
             <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
               <div className="flex items-center gap-2 text-red-400">
@@ -128,21 +114,29 @@ export default function RegisterForm() {
               </div>
             </div>
           )}
+
+          {registerMutation.isSuccess && (
+            <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-xl">
+              <div className="flex items-center gap-2 text-green-400">
+                <svg
+                  className="w-5 h-5 flex-shrink-0"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <span className="text-sm">
+                  Регистрация успешна! Перенаправляем...
+                </span>
+              </div>
+            </div>
+          )}
         </form>
 
-        {/* Информация о требованиях */}
-        <div className="mt-6 p-4 bg-white/5 rounded-xl border border-white/10">
-          <p className="text-gray-400 text-sm text-center mb-2">
-            Требования к аккаунту:
-          </p>
-          <ul className="text-gray-400 text-sm space-y-1">
-            <li>• Username: 3-20 символов (только буквы, цифры, _)</li>
-            <li>• Пароль: минимум 6 символов</li>
-            <li>• Пароль должен содержать заглавные и строчные буквы, цифры</li>
-          </ul>
-        </div>
-
-        {/* Ссылка на логин */}
         <div className="mt-6 text-center">
           <p className="text-gray-400 text-sm">
             Уже есть аккаунт?{" "}
