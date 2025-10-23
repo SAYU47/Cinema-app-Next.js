@@ -17,7 +17,7 @@ npm, yarn, pnpm или bun
 
 # Клонирование репозитория
 
-git clone <repository-url>
+git clone git@github.com:SAYU47/Cinema-app-Next.js.git
 cd cinema-app
 
 # Установка зависимостей
