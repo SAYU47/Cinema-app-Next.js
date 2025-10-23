@@ -9,7 +9,7 @@ import {
   import { Movie } from '@/types/movie';
   import { Cinema } from '@/types/cinema';
   
-//   Мок для API
+
   jest.mock('../../api/endpoints', () => ({
     getMovieSession: jest.fn(),
   }));
@@ -18,7 +18,7 @@ import {
   
   describe('calculateTimeLeft', () => {
     const mockSettings: Settings = {
-      bookingPaymentTimeSeconds: 900, // 15 минут
+      bookingPaymentTimeSeconds: 900,
     };
   
     const mockBookingSeat: BookingSeat = {
@@ -45,7 +45,7 @@ import {
   
     it('should calculate correct time left for unpaid booking', () => {
       const now = Date.now();
-      const fiveMinutesAgo = new Date(now - 5 * 60 * 1000); // 5 минут назад
+      const fiveMinutesAgo = new Date(now - 5 * 60 * 1000); 
       
       const unpaidBooking: MyBookingSeats = {
         id: '1',
@@ -59,14 +59,14 @@ import {
   
       const result = calculateTimeLeft(unpaidBooking, mockSettings);
   
-      // Должно остаться ~10 минут (15 - 5)
-      expect(result.timeLeft).toBeLessThanOrEqual(600); // 10 минут в секундах
+
+      expect(result.timeLeft).toBeLessThanOrEqual(600); 
       expect(result.timeLeft).toBeGreaterThan(590);
       expect(result.isExpired).toBe(false);
     });
   
     it('should mark as expired when time is up', () => {
-      const twentyMinutesAgo = new Date(Date.now() - 20 * 60 * 1000); // 20 минут назад
+      const twentyMinutesAgo = new Date(Date.now() - 20 * 60 * 1000);
       
       const expiredBooking: MyBookingSeats = {
         id: '1',
@@ -258,8 +258,8 @@ import {
     it('should handle missing movie and cinema data', async () => {
       const mockSessionInfo = {
         id: 1,
-        movieId: 999, // Несуществующий ID
-        cinemaId: 999, // Несуществующий ID
+        movieId: 999, 
+        cinemaId: 999, 
         hallId: 1,
         startTime: new Date().toISOString(),
         endTime: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
@@ -339,7 +339,7 @@ import {
       expect(result).toHaveLength(2);
       expect(result[0].movieSessionInfo).toEqual(mockSessionInfo1);
       expect(result[1].movieSessionInfo).toEqual(mockSessionInfo2);
-      // У оплаченного бронирования не должно быть timeLeft
+
       expect(result[1].timeLeft).toBeUndefined();
       expect(result[1].isExpired).toBe(false);
     });

@@ -8,7 +8,7 @@ import { SessionInfo } from '@/types/booking';
 import { Cinema } from '@/types/cinema';
 import { Movie } from '@/types/movie';
 
-// Мокаем зависимости
+
 jest.mock('next/navigation');
 jest.mock('../../providers/AuthProvider');
 jest.mock('../../lib/api/endpoints');
@@ -25,7 +25,6 @@ const mockedUseRouter = useRouter as jest.MockedFunction<typeof useRouter>;
 const mockedUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
 const mockedBookSeats = bookSeats as jest.MockedFunction<typeof bookSeats>;
 
-// Тестовые данные с правильными типами
 const mockSession: SessionInfo = {
   id: 1,
   movieId: 1,
@@ -57,15 +56,8 @@ const mockCinema: Cinema = {
 
 };
 
-// Мокаем console.log чтобы убрать лишний вывод
-const originalConsoleLog = console.log;
-beforeAll(() => {
-  console.log = jest.fn();
-});
 
-afterAll(() => {
-  console.log = originalConsoleLog;
-});
+
 
 describe('BookingClient', () => {
   const mockPush = jest.fn();
@@ -112,11 +104,10 @@ describe('BookingClient', () => {
       />
     );
 
-    // Проверяем сетку мест
     expect(screen.getByText('ряд 1')).toBeTruthy();
     expect(screen.getByText('ряд 2')).toBeTruthy();
 
-    // Находим доступное место во втором ряду (первое место)
+
     const availableSeats = screen.getAllByText('1');
     const secondRowFirstSeat = availableSeats[1]; 
     
@@ -142,13 +133,11 @@ describe('BookingClient', () => {
       />
     );
 
-    // Находим забронированное место (первое место в первом ряду)
     const bookedSeats = screen.getAllByText('1');
-    const firstRowFirstSeat = bookedSeats[0]; // Забронированное место
+    const firstRowFirstSeat = bookedSeats[0]; 
     
     await user.click(firstRowFirstSeat);
-    
-    // Проверяем что место не выбрано - ищем span с цифрой 0
+
     const selectedSeatsCount = screen.getByText((content, element) => {
       return element?.tagName.toLowerCase() === 'span' && 
              element?.textContent === '0' &&
@@ -216,7 +205,7 @@ describe('BookingClient', () => {
       />
     );
 
-    // Выбираем доступное место во втором ряду
+
     const availableSeats = screen.getAllByText('1');
     const secondRowFirstSeat = availableSeats[1];
     
@@ -249,7 +238,6 @@ describe('BookingClient', () => {
       />
     );
 
-    // Выбираем доступное место во втором ряду
     const availableSeats = screen.getAllByText('1');
     const secondRowFirstSeat = availableSeats[1];
     

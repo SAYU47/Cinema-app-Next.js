@@ -14,7 +14,7 @@ export default function RegisterForm() {
   const router = useRouter();
   const { login } = useAuth();
 
-  // Используем мутацию из React Query
+
   const registerMutation = useRegisterMutation();
   const loginMutation = useLoginMutation();
   const {

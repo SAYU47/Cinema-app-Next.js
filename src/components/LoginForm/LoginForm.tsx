@@ -30,22 +30,19 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      // Выполняем мутацию
       const result = await loginMutation.mutateAsync(data);
-      console.log(result)
-      // Используем метод login из контекста для обновления глобального состояния
+
+
       login(data.username, result.token);
-      
-      // Перенаправляем на страницу билетов после успешного входа
+
       router.push("/my-tickets");
       
     } catch (err) {
-      // Ошибка обрабатывается автоматически в onError мутации
+
       console.error('Login error:', err);
     }
   };
 
-  // Получаем состояние загрузки и ошибку из мутации
   const isLoading = loginMutation.isPending;
   const serverError = loginMutation.error?.message;
 

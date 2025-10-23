@@ -6,13 +6,13 @@ import { registerUser, loginUser } from '@/lib/api/endpoints';
 import { RegisterFormData } from '@/lib/validation-schema';
 import React from 'react';
 
-// Мокаем функции API
+
 jest.mock('../../lib/api/endpoints', () => ({
   registerUser: jest.fn(),
   loginUser: jest.fn(),
 }));
 
-// Мокаем localStorage
+
 const localStorageMock = {
   getItem: jest.fn(),
   setItem: jest.fn(),
@@ -21,7 +21,7 @@ const localStorageMock = {
 };
 Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 
-// Создаем обертку с QueryClient
+
 const createWrapper = () => {
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -30,7 +30,7 @@ const createWrapper = () => {
     },
   });
   
-  // Создаем компонент-обертку
+
   const Wrapper = ({ children }: { children: ReactNode }) => {
     return React.createElement(
       QueryClientProvider,

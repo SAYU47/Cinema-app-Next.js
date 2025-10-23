@@ -175,7 +175,7 @@ describe('useBookingTimer', () => {
   it('should update timeLeft every second for unpaid bookings', () => {
     const unpaidBookings = [
       { id: '1', isPaid: false, timeLeft: 100, isExpired: false },
-      { id: '2', isPaid: true, timeLeft: 50 }, // Не должен обновляться
+      { id: '2', isPaid: true, timeLeft: 50 }, 
     ] as BookingWithMovieInfo[];
 
     renderHook(() => useBookingTimer(unpaidBookings, mockSetState));
