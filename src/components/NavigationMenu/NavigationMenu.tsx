@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
-
+import { toast } from 'sonner';
 export default function NavigationMenu() {
   const pathname = usePathname();
   const router = useRouter();
@@ -12,17 +12,30 @@ export default function NavigationMenu() {
 
   const handleLogout = async () => {
     try {
-      await logout(); 
-      router.push('/cinema/movies');
+      await logout();
+      router.push('/');
     } catch (error) {
       console.error('Ошибка при выходе:', error);
     }
   };
 
+  const handleMyTicketsClick =  (e: React.MouseEvent) => {
+    if (!isAuthorized) {    
+      e.preventDefault();
+      toast.error('Для доступа к странице "Мои билеты" необходимо авторизоваться');
+      router.push('/auth/login'); 
+    }
+  };
+
   const menuItems = [
-    { href: '/cinema/movies', label: 'Фильмы', icon: '🎬' },
+    { href: '/', label: 'Фильмы', icon: '🎬' },
     { href: '/cinema/cinemas', label: 'Кинотеатры', icon: '🏛️' },
-    { href: '/my-tickets', label: 'Мои билеты', icon: '🎫' },
+    {
+      href: '/my-tickets',
+      label: 'Мои билеты',
+      icon: '🎫',
+      onClick: handleMyTicketsClick,
+    },
     {
       href: isAuthorized ? '#' : '/auth/login',
       label: isAuthorized ? 'Выход' : 'Вход',
@@ -37,17 +50,16 @@ export default function NavigationMenu() {
 
   return (
     <div className="flex flex-col min-h-dvh bg-gradient-to-b from-gray-900 to-gray-800 p-6 rounded-xl shadow-2xl border border-gray-700 min-w-[300px]">
-      <div className="mb-8 pb-4 border-b border-gray-700">
+      <Link href={'/'} className="mb-8 pb-4 border-b border-gray-700">
         <h2 className="text-xl font-bold text-white flex items-center gap-2">
           <span className="text-2xl">🍿</span>
           Cinema App
         </h2>
         <p className="text-gray-400 text-sm mt-1">Ваш киногид</p>
-      </div>
+      </Link>
       <nav className="space-y-2 flex-1">
         {menuItems.map((item) => {
           const active = isActive(item.href);
-
           return (
             <Link
               key={item.href}
@@ -80,22 +92,10 @@ export default function NavigationMenu() {
               {!active && hoveredItem === item.href && (
                 <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-6 bg-blue-500/50 rounded-r-full" />
               )}
-              {active && (
-                <svg
-                  className="w-4 h-4 ml-auto transform rotate-90"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              )}
             </Link>
           );
         })}
       </nav>
-
-      {/* Футер */}
       <div className="mt-8 pt-4 border-t border-gray-700">
         <div className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors duration-300 cursor-pointer group">
           <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-sm font-bold group-hover:scale-110 transition-transform duration-300">

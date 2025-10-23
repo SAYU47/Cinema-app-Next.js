@@ -13,8 +13,7 @@ import { useAuth } from '@/providers/AuthProvider';
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
-  
-  // Используем мутацию из React Query
+
   const loginMutation = useLoginMutation();
 
   const {
@@ -60,7 +59,7 @@ export default function LoginPage() {
             🎬
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">Вход в систему</h1>
-          <p className="text-gray-300">Авторизация по username и password</p>
+          <p className="text-gray-300">Авторизация</p>
         </div>
 
         {/* Форма */}
@@ -137,19 +136,7 @@ export default function LoginPage() {
             </div>
           )}
         </form>
-
-        {/* Демо данные (можно убрать после подключения реального API) */}
-        <div className="mt-6 p-4 bg-white/5 rounded-xl border border-white/10">
-          <p className="text-gray-400 text-sm text-center mb-2">
-            Для тестирования используйте:
-          </p>
-          <div className="text-gray-400 text-sm space-y-1 text-center">
-            <div><strong>username:</strong> demo</div>
-            <div><strong>password:</strong> demo123</div>
-          </div>
-        </div>
-
-        {/* Ссылка на регистрацию */}
+            
         <div className="mt-6 text-center">
           <p className="text-gray-400 text-sm">
             Нет аккаунта?{" "}

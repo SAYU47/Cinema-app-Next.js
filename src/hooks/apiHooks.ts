@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { registerUser, loginUser, RegisterResponse, LoginResponse, MovieResponse, ApiError, getMovies } from '@/lib/api/endpoints';
+import { registerUser, loginUser, getMovies } from '@/lib/api/endpoints';
 import { RegisterFormData } from '@/lib/validation-schema';
+import { RegisterResponse, LoginResponse, MovieResponse, ApiError} from '@/types/endpoints'
 
 
 export const useRegisterMutation = () => {

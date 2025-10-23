@@ -11,22 +11,25 @@ export default function MovieCard({ movie }: MovieCardProps) {
   const posterUrl = getMoviePosterUrl(movie.posterImage);
 
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer">
+    <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-105">
       <div className="relative">
-        <div className="display-block">
+        <div className="display-block ">
+          <div className="flex relative w-fit">
           <Image
             src={posterUrl}
             alt={movie.title}
             width={300}
             height={400}
             quality={100}
-            className="object-cover static"
+            className="object-cover relative"
             priority={false}
           />
-        </div>
-        <div className="absolute top-3 right-3 bg-black bg-opacity-70 text-white px-2 py-1 rounded-md text-sm font-semibold">
+          <div className="absolute top-3 right-3 bg-black bg-opacity-70 text-white px-2 py-1 rounded-md text-sm font-semibold">
           ⭐ {movie.rating}
         </div>
+        </div>
+        </div>
+        
         <div className="absolute bottom-3 left-3 bg-blue-600 text-white px-2 py-1 rounded-md text-xs">
           {movie.lengthMinutes} мин
         </div>

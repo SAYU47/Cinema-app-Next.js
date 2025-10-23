@@ -11,7 +11,12 @@ const nextConfig: NextConfig = {
         port: '3022',
         pathname: '/**',
       },
-     
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3022',
+        pathname: '/static/images/posters/**',
+      },  
     ],
     
  

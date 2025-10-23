@@ -17,11 +17,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [username, setUsername] = useState<string | null>(null);
   const router = useRouter();
   useEffect(() => {
-    // Проверяем есть ли токен
     const token = localStorage.getItem('authToken');
     const user = localStorage.getItem('username');
     
-    // Авторизован если есть токен
     const auth = !!token;
     
     setIsAuthorized(auth);
@@ -50,10 +48,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function useAuth() {
+
+export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
-  return context;
-}
+  const isAuthorized = context.isAuthorized;
+  
+  return {
+    ...context,
+    isAuthorized
+  };
+};

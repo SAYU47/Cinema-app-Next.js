@@ -14,7 +14,7 @@ export default async function MoviesPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
+      <div className="min-h-screen bg-gray-50 p-8 w-full">
         <div className="max-w-7xl mx-auto">
           <div className="text-center text-red-600">
             <p>Ошибка при загрузке фильмов: {error.message}</p>
@@ -25,7 +25,7 @@ export default async function MoviesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gray-50 p-8 w-full">
       <div className="max-w-7xl mx-auto">
         {/* Заголовок */}
         <div className="text-center mb-12">
