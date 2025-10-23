@@ -34,3 +34,7 @@ export interface BookingWithMovieInfo extends MyBookingSeats {
   timeLeft?: number; 
   isExpired?: boolean; 
 }
+
+export interface Settings {
+  bookingPaymentTimeSeconds: number
+}

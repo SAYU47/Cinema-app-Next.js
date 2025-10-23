@@ -1,7 +1,8 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { registerUser, loginUser, getMovies } from '@/lib/api/endpoints';
 import { RegisterFormData } from '@/lib/validation-schema';
-import { RegisterResponse, LoginResponse, MovieResponse, ApiError} from '@/types/endpoints'
+import { RegisterResponse, LoginResponse, ApiError} from '@/types/endpoints'
+import { Movie } from '@/types/movie'
 
 
 export const useRegisterMutation = () => {
@@ -35,7 +36,7 @@ export const useLoginMutation = () => {
 };
 
 export const useMovies = () => {
-  return useQuery<MovieResponse[], ApiError> ({
+  return useQuery<Movie[], ApiError> ({
     queryKey: ['movies'],
     queryFn: getMovies,
   });

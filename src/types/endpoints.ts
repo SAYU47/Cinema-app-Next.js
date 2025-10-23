@@ -1,3 +1,5 @@
+import { BookingSeat } from "./booking";
+
 export interface RegisterResponse {
   id: string;
   username: string;
@@ -25,12 +27,11 @@ export interface MovieSession {
   movieId: number;
   cinemaId: number;
   startTime: string;
-  endTime: string;
   seats: {
     rows: number;
     columns: number;
   };
-  bookedSeats: string[];
+  bookedSeats: BookingSeat[];
 }
 
 export interface BookingRequest {

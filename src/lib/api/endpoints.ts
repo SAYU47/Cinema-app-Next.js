@@ -1,6 +1,6 @@
-  import { BookingRequest, SessionInfo } from "@/types/booking";
+  import { BookingRequest, MyBookingSeats, SessionInfo, Settings } from "@/types/booking";
   import { Cinema, CinemaSession } from "@/types/cinema";
-  import { RegisterResponse, LoginResponse, SesionsByIdResponse,BookingResponse } from "@/types/endpoints";
+  import { RegisterResponse, LoginResponse, SesionsByIdResponse,BookingResponse, MovieSession } from "@/types/endpoints";
   import { apiClient } from "./axios-client";
   import { RegisterFormData } from "@/lib/validation-schema";
 import { Movie } from "@/types/movie";
@@ -59,7 +59,7 @@ import { Movie } from "@/types/movie";
     });
     return data;
   };
-  export const getMyTickets = async ()  => {
+  export const getMyTickets = async (): Promise<MyBookingSeats[]>  => {
     const token = localStorage.getItem('authToken');
     const { data } = await apiClient.get('/me/bookings', {
       headers: {
@@ -70,7 +70,7 @@ import { Movie } from "@/types/movie";
     return data;
   };
 
-export const getSettings = async (): Promise<{ bookingPaymentTimeSeconds: number }> => {
+export const getSettings = async (): Promise<Settings> => {
   const { data } = await apiClient.get('/settings');
 
   return data

@@ -1,9 +1,9 @@
 import { getMovieSession } from '@/lib/api/endpoints';
-import { BookingWithMovieInfo, MyBookingSeats } from '@/types/booking';
+import { BookingWithMovieInfo, MyBookingSeats, Settings } from '@/types/booking';
 import { Movie } from '@/types/movie';
 import { Cinema } from '@/types/cinema';
 
-export const calculateTimeLeft = (booking: MyBookingSeats, settings: any) => {
+export const calculateTimeLeft = (booking: MyBookingSeats, settings: Settings) => {
   if (booking.isPaid) return { timeLeft: undefined, isExpired: false };
 
   const bookedAt = new Date(booking.bookedAt).getTime();
@@ -28,8 +28,9 @@ export const enrichBookingsWithDetails = async (
   bookingsResponse: MyBookingSeats[], 
   moviesResponse: Movie[], 
   cinemasResponse: Cinema[], 
-  settingsResponse: any
-): Promise<BookingWithMovieInfo[]> => {
+  settingsResponse: Settings
+): Promise<any[]> => {
+  console.log(bookingsResponse)
   return await Promise.all(
     bookingsResponse.map(async (booking: MyBookingSeats) => {
       try {
