@@ -15,7 +15,6 @@
     (response) => response,
     (error) => {
       if (error.response) {
-        console.log(error)
         const message = error.response.data?.message || `Ошибка: ${error.response.status}`;
         return Promise.reject(new Error(message));
       } else if (error.request) {

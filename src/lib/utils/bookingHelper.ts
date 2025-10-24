@@ -2,6 +2,7 @@ import { getMovieSession } from '@/lib/api/endpoints';
 import { BookingWithMovieInfo, MyBookingSeats, Settings } from '@/types/booking';
 import { Movie } from '@/types/movie';
 import { Cinema } from '@/types/cinema';
+import { toast } from 'sonner';
 
 export const calculateTimeLeft = (booking: MyBookingSeats, settings: Settings) => {
   if (booking.isPaid) return { timeLeft: undefined, isExpired: false };
@@ -49,7 +50,7 @@ export const enrichBookingsWithDetails = async (
           isExpired
         };
       } catch (error) {
-        console.error(`Ошибка загрузки сеанса ${booking.movieSessionId}:`, error);
+        toast.error(`Ошибка загрузки сеанса ${booking.movieSessionId}:`);
         return createFallbackBooking(booking);
       }
     })

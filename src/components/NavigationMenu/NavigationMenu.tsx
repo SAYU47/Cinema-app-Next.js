@@ -15,7 +15,7 @@ export default function NavigationMenu() {
       await logout();
       router.push('/');
     } catch (error) {
-      console.error('Ошибка при выходе:', error);
+      toast.error(`Ошибка при выходе: ${error}`);
     }
   };
 

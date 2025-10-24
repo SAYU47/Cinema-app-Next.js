@@ -9,6 +9,7 @@ import { AuthorizationMessage } from '@/components/MyTiketsComponents/Authorizat
 import { LoadingState } from '@/components/MyTiketsComponents/LoadingState';
 import { TicketsSection } from '@/components/MyTiketsComponents/TicketsSection';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 export default function MyTicketsPage() { 
   const { isAuthorized } = useAuth();
@@ -36,8 +37,7 @@ export default function MyTicketsPage() {
         )
       );
     } catch (error) {
-      console.error('Ошибка оплаты:', error);
-      alert('Произошла ошибка при оплате. Попробуйте еще раз.');
+      toast.error(`Ошибка оплаты: ${error}`);
     } finally {
       setPayingBookingId(null);
     }
@@ -59,8 +59,7 @@ export default function MyTicketsPage() {
         
         <TicketsSection
           title="Неоплаченные"
-          bookings={groupedBookings.unpaid}
-          icon="🚨"
+          bookings={groupedBookings.unpaid}    
           colorClass="bg-red-50 border-red-500"
           showPayButton={true}
           onPayment={handlePayment}
@@ -69,15 +68,13 @@ export default function MyTicketsPage() {
         
         <TicketsSection
           title="Будущие сеансы"
-          bookings={groupedBookings.upcoming}
-          icon="📅"
+          bookings={groupedBookings.upcoming}  
           colorClass="bg-green-50 border-green-500"
         />
         
         <TicketsSection
           title="Прошедшие сеансы" 
-          bookings={groupedBookings.past}
-          icon="📋"
+          bookings={groupedBookings.past}   
           colorClass="bg-blue-50 border-blue-500"
         />
       </div>

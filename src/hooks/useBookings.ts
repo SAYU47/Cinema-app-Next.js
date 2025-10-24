@@ -3,6 +3,7 @@
   import { getCinemas, getMovies, getMyTickets, getSettings } from '@/lib/api/endpoints';
   import { BookingWithMovieInfo } from '@/types/booking';
   import { enrichBookingsWithDetails } from '@/lib/utils/bookingHelper';
+import { toast } from 'sonner';
 
   export const useBookings = () => {
     const { isAuthorized } = useAuth();
@@ -32,7 +33,7 @@
           
           setBookings(bookingsWithFullInfo);
         } catch (error) {
-          console.error('Ошибка загрузки данных:', error);
+          toast.error(`Ошибка загрузки данных: ${error}`);
         } finally {
           setIsLoading(false);
         }

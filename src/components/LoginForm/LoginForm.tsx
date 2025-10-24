@@ -9,6 +9,7 @@ import { loginSchema, LoginFormData } from "@/lib/validation-schema";
 import CustomButton from "@/components/ui/CustomButton/CustomButton";
 import { useLoginMutation } from "@/hooks/apiHooks";
 import { useAuth } from '@/providers/AuthProvider';
+import { toast } from "sonner";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -39,7 +40,7 @@ export default function LoginPage() {
       
     } catch (err) {
 
-      console.error('Login error:', err);
+      toast.error(`Login error: ${err}`);
     }
   };
 

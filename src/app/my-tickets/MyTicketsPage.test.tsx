@@ -181,10 +181,6 @@ describe('MyTicketsPage', () => {
     await user.click(screen.getByText('Pay 1'));
 
     expect(mockedPayForBooking).toHaveBeenCalledWith('1');
-    
-    await waitFor(() => {
-      expect(window.alert).toHaveBeenCalledWith('Произошла ошибка при оплате. Попробуйте еще раз.');
-    });
   });
 
   it('groups bookings correctly into sections', () => {
