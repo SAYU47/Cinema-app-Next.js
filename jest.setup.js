@@ -1,11 +1,9 @@
-// Добавляем полифиллы для TextEncoder/TextDecoder
 const { TextEncoder, TextDecoder } = require('util');
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
 
 require('@testing-library/jest-dom');
 
-// Простые моки
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
   useSearchParams: jest.fn(() => ({
