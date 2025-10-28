@@ -1,4 +1,3 @@
-// app/cinema/movies/[movieId]/MovieDetailsClient.tsx
 'use client';
 
 import { SesionsByIdResponse } from '@/types/endpoints';
@@ -42,7 +41,7 @@ export default function MovieDetailsClient({
     <div className="min-h-screen bg-gray-50 p-8 w-full mt-[60px] min-lg:mt-0">
       <div className="max-w-6xl mx-auto">
         <Link
-          href="/cinema/movies"
+          href="/"
           className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-6"
         >
           ← Назад к фильмам

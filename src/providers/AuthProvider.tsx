@@ -38,7 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem('username');
     setIsAuthorized(false);
     setUsername(null);
-    router.push('/cinema/movies');
+    router.push('/');
   };
 
   return (

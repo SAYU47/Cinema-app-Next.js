@@ -1,5 +1,6 @@
 import { getCinemas, getMovieSession, getMovies } from '@/lib/api/endpoints';
 import BookingClient from '@/components/BookingClient/BookingClient';
+import Link from 'next/link';
 
 interface BookingPageProps {
   params: {
@@ -32,9 +33,9 @@ export default async function BookingPage({ params }: BookingPageProps) {
           <h1 className="text-2xl font-bold text-red-600 mb-4">
             Ошибка загрузки данных сеанса
           </h1>
-          <a href="/cinema/movies" className="text-blue-600 hover:underline">
+          <Link href="/" className="text-blue-600 hover:underline">
             Вернуться к фильмам
-          </a>
+          </Link>
         </div>
       </div>
     );

@@ -1,9 +1,9 @@
-// app/cinema/movies/[movieId]/page.tsx
 import { getCinemas, getMovies, getSessionsById } from '@/lib/api/endpoints';
 import { SesionsByIdResponse } from '@/types/endpoints';
 import { Cinema } from '@/types/cinema';
 import { Movie } from '@/types/movie';
 import MovieDetailsClient from '@/components/MovieDetailsClient/MovieDetailsClient';
+import Link from 'next/link';
 
 interface MovieDetailsPageProps {
   params: {
@@ -40,9 +40,9 @@ export default async function MovieDetailsPage({
           <h1 className="text-2xl font-bold text-red-600 mb-4">
             {error ? `Ошибка: ${error.message}` : 'Фильм не найден'}
           </h1>
-          <a href="/cinema/movies" className="text-blue-600 hover:underline">
+          <Link href="/" className="text-blue-600 hover:underline">
             Вернуться к списку фильмов
-          </a>
+          </Link>
         </div>
       </div>
     );
