@@ -1,5 +1,4 @@
-import { BookingSeat, BookingWithMovieInfo } from "@/types/booking";
-
+import { BookingSeat, BookingWithMovieInfo } from '@/types/booking';
 
 interface TicketCardProps {
   booking: BookingWithMovieInfo;
@@ -9,14 +8,13 @@ interface TicketCardProps {
   timeLeft?: number;
 }
 
-export default function TicketCard({ 
-  booking, 
-  showPayButton, 
-  onPayment, 
+export default function TicketCard({
+  booking,
+  showPayButton,
+  onPayment,
   isPaying = false,
-  timeLeft 
+  timeLeft,
 }: TicketCardProps) {
-  
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -28,21 +26,23 @@ export default function TicketCard({
     return {
       date: date.toLocaleDateString('ru-RU', {
         day: '2-digit',
-        month: '2-digit'
+        month: '2-digit',
       }),
       time: date.toLocaleTimeString('ru-RU', {
         hour: '2-digit',
-        minute: '2-digit'
-      })
+        minute: '2-digit',
+      }),
     };
   };
 
-  const sessionDate = booking.movieSessionInfo?.startTime 
+  const sessionDate = booking.movieSessionInfo?.startTime
     ? formatSessionDate(booking.movieSessionInfo.startTime)
     : null;
 
   const formatSeats = (seats: BookingSeat[]) => {
-    return seats.map(seat => `Ряд ${seat.rowNumber}, место ${seat.seatNumber}`);
+    return seats.map(
+      (seat) => `Ряд ${seat.rowNumber}, место ${seat.seatNumber}`
+    );
   };
 
   return (
@@ -57,10 +57,11 @@ export default function TicketCard({
             {sessionDate && ` • ${sessionDate.date} ${sessionDate.time}`}
           </p>
           <p className="text-gray-500 text-sm">
-            Забронировано: {new Date(booking.bookedAt).toLocaleDateString('ru-RU')}
+            Забронировано:{' '}
+            {new Date(booking.bookedAt).toLocaleDateString('ru-RU')}
           </p>
         </div>
-        
+
         {showPayButton && onPayment && (
           <div className="text-right space-y-2">
             {timeLeft !== undefined && (
@@ -78,7 +79,7 @@ export default function TicketCard({
           </div>
         )}
       </div>
-      
+
       <div className="border-t border-gray-200 pt-4">
         <p className="text-sm text-gray-700 mb-2">Места:</p>
         <div className="flex flex-wrap gap-2">
@@ -92,14 +93,16 @@ export default function TicketCard({
           ))}
         </div>
       </div>
-      
+
       <div className="mt-4 flex justify-between items-center">
         {!showPayButton && (
-          <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-            booking.isPaid 
-              ? 'bg-green-100 text-green-800' 
-              : 'bg-yellow-100 text-yellow-800'
-          }`}>
+          <span
+            className={`px-3 py-1 rounded-full text-sm font-medium ${
+              booking.isPaid
+                ? 'bg-green-100 text-green-800'
+                : 'bg-yellow-100 text-yellow-800'
+            }`}
+          >
             {booking.isPaid ? 'Оплачено' : 'Ожидает оплаты'}
           </span>
         )}

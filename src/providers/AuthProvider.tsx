@@ -6,8 +6,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 interface AuthContextType {
   isAuthorized: boolean;
   username: string | null;
-  login:  (username: string, token: string) => void;
-  logout:  () => void;
+  login: (username: string, token: string) => void;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,9 +19,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     const user = localStorage.getItem('username');
-    
+
     const auth = !!token;
-    
+
     setIsAuthorized(auth);
     setUsername(user);
   }, []);
@@ -33,12 +33,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUsername(username);
   };
 
-  const logout =  () => {
+  const logout = () => {
     localStorage.removeItem('authToken');
     localStorage.removeItem('username');
     setIsAuthorized(false);
     setUsername(null);
-     router.push('/cinema/movies')
+    router.push('/cinema/movies');
   };
 
   return (
@@ -48,16 +48,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   const isAuthorized = context.isAuthorized;
-  
+
   return {
     ...context,
-    isAuthorized
+    isAuthorized,
   };
 };

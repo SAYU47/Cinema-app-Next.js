@@ -18,8 +18,6 @@ interface ReactQueryProviderProps {
 
 export function ReactQueryProvider({ children }: ReactQueryProviderProps) {
   return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 }

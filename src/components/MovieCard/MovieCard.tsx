@@ -1,7 +1,7 @@
-import Link from "next/link";
-import { Movie } from "@/types/movie";
-import Image from "next/image";
-import { getMoviePosterUrl } from "@/lib/utils/movieUtils";
+import Link from 'next/link';
+import { Movie } from '@/types/movie';
+import Image from 'next/image';
+import { getMoviePosterUrl } from '@/lib/utils/movieUtils';
 
 interface MovieCardProps {
   movie: Movie;
@@ -15,21 +15,21 @@ export default function MovieCard({ movie }: MovieCardProps) {
       <div className="relative">
         <div className="display-block ">
           <div className="flex relative w-fit">
-          <Image
-            src={posterUrl}
-            alt={movie.title}
-            width={300}
-            height={400}
-            quality={100}
-            className="object-cover relative"
-            priority={false}
-          />
-          <div className="absolute top-3 right-3 bg-black bg-opacity-70 text-white px-2 py-1 rounded-md text-sm font-semibold">
-          ⭐ {movie.rating}
+            <Image
+              src={posterUrl}
+              alt={movie.title}
+              width={300}
+              height={400}
+              quality={100}
+              className="object-cover relative"
+              priority={false}
+            />
+            <div className="absolute top-3 right-3 bg-black bg-opacity-70 text-white px-2 py-1 rounded-md text-sm font-semibold">
+              ⭐ {movie.rating}
+            </div>
+          </div>
         </div>
-        </div>
-        </div>
-        
+
         <div className="absolute bottom-3 left-3 bg-blue-600 text-white px-2 py-1 rounded-md text-xs">
           {movie.lengthMinutes} мин
         </div>

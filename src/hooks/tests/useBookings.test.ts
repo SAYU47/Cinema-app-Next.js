@@ -1,8 +1,17 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
-import { useBookings, useGroupedBookings, useBookingTimer } from '../useBookings';
+import {
+  useBookings,
+  useGroupedBookings,
+  useBookingTimer,
+} from '../useBookings';
 import { useAuth } from '@/providers/AuthProvider';
 
-import { getCinemas, getMovies, getMyTickets, getSettings } from '@/lib/api/endpoints';
+import {
+  getCinemas,
+  getMovies,
+  getMyTickets,
+  getSettings,
+} from '@/lib/api/endpoints';
 import { enrichBookingsWithDetails } from '@/lib/utils/bookingHelper';
 import { BookingWithMovieInfo, MyBookingSeats } from '@/types/booking';
 
@@ -11,11 +20,17 @@ jest.mock('../../lib/api/endpoints');
 jest.mock('../../lib/utils/bookingHelper');
 
 const mockedUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
-const mockedGetMyTickets = getMyTickets as jest.MockedFunction<typeof getMyTickets>;
+const mockedGetMyTickets = getMyTickets as jest.MockedFunction<
+  typeof getMyTickets
+>;
 const mockedGetMovies = getMovies as jest.MockedFunction<typeof getMovies>;
 const mockedGetCinemas = getCinemas as jest.MockedFunction<typeof getCinemas>;
-const mockedGetSettings = getSettings as jest.MockedFunction<typeof getSettings>;
-const mockedEnrichBookings = enrichBookingsWithDetails as jest.MockedFunction<typeof enrichBookingsWithDetails>;
+const mockedGetSettings = getSettings as jest.MockedFunction<
+  typeof getSettings
+>;
+const mockedEnrichBookings = enrichBookingsWithDetails as jest.MockedFunction<
+  typeof enrichBookingsWithDetails
+>;
 
 const mockSetState = jest.fn();
 
@@ -92,8 +107,22 @@ describe('useBookings', () => {
 describe('useGroupedBookings', () => {
   const mockBookings = [
     { id: '1', isPaid: false, isExpired: false },
-    { id: '2', isPaid: true, isExpired: false, movieSessionInfo: { startTime: new Date(Date.now() + 3600000).toISOString() } },
-    { id: '3', isPaid: true, isExpired: false, movieSessionInfo: { startTime: new Date(Date.now() - 3600000).toISOString() } },
+    {
+      id: '2',
+      isPaid: true,
+      isExpired: false,
+      movieSessionInfo: {
+        startTime: new Date(Date.now() + 3600000).toISOString(),
+      },
+    },
+    {
+      id: '3',
+      isPaid: true,
+      isExpired: false,
+      movieSessionInfo: {
+        startTime: new Date(Date.now() - 3600000).toISOString(),
+      },
+    },
     { id: '4', isPaid: false, isExpired: true },
   ] as BookingWithMovieInfo[];
 
@@ -102,10 +131,10 @@ describe('useGroupedBookings', () => {
 
     expect(result.current.unpaid).toHaveLength(1);
     expect(result.current.unpaid[0].id).toBe('1');
-    
+
     expect(result.current.upcoming).toHaveLength(1);
     expect(result.current.upcoming[0].id).toBe('2');
-    
+
     expect(result.current.past).toHaveLength(1);
     expect(result.current.past[0].id).toBe('3');
   });
@@ -123,7 +152,9 @@ describe('useGroupedBookings', () => {
       { id: '1', isPaid: true, isExpired: false, movieSessionInfo: undefined },
     ] as BookingWithMovieInfo[];
 
-    const { result } = renderHook(() => useGroupedBookings(bookingsWithoutSession));
+    const { result } = renderHook(() =>
+      useGroupedBookings(bookingsWithoutSession)
+    );
 
     expect(result.current.upcoming).toHaveLength(1);
     expect(result.current.upcoming[0].id).toBe('1');
@@ -135,7 +166,9 @@ describe('useGroupedBookings', () => {
       { id: '2', isPaid: false, isExpired: false },
     ] as BookingWithMovieInfo[];
 
-    const { result } = renderHook(() => useGroupedBookings(bookingsWithExpired));
+    const { result } = renderHook(() =>
+      useGroupedBookings(bookingsWithExpired)
+    );
 
     expect(result.current.unpaid).toHaveLength(1);
     expect(result.current.unpaid[0].id).toBe('2');
@@ -175,11 +208,10 @@ describe('useBookingTimer', () => {
   it('should update timeLeft every second for unpaid bookings', () => {
     const unpaidBookings = [
       { id: '1', isPaid: false, timeLeft: 100, isExpired: false },
-      { id: '2', isPaid: true, timeLeft: 50 }, 
+      { id: '2', isPaid: true, timeLeft: 50 },
     ] as BookingWithMovieInfo[];
 
     renderHook(() => useBookingTimer(unpaidBookings, mockSetState));
-
 
     jest.advanceTimersByTime(1000);
     expect(mockSetState).toHaveBeenCalledTimes(1);
@@ -228,7 +260,9 @@ describe('useBookingTimer', () => {
       { id: '1', isPaid: false, timeLeft: 100 },
     ] as BookingWithMovieInfo[];
 
-    const { unmount } = renderHook(() => useBookingTimer(unpaidBookings, mockSetState));
+    const { unmount } = renderHook(() =>
+      useBookingTimer(unpaidBookings, mockSetState)
+    );
 
     unmount();
 
@@ -240,7 +274,7 @@ describe('useBookingTimer', () => {
 describe('Edge Cases', () => {
   it('should handle concurrent API calls', async () => {
     mockedUseAuth.mockReturnValue({ isAuthorized: true } as any);
-    
+
     let resolvePromise: (value: any) => void;
     const promise: Promise<MyBookingSeats[]> = new Promise((resolve) => {
       resolvePromise = resolve;
@@ -252,11 +286,10 @@ describe('Edge Cases', () => {
 
     unmount();
 
-
     resolvePromise!([]);
 
     await waitFor(() => {
-      expect(result.current.isLoading).toBe(true); 
+      expect(result.current.isLoading).toBe(true);
     });
   });
 
@@ -266,7 +299,9 @@ describe('Edge Cases', () => {
       { id: '2', isPaid: true, isExpired: undefined },
     ] as BookingWithMovieInfo[];
 
-    const { result } = renderHook(() => useGroupedBookings(problematicBookings));
+    const { result } = renderHook(() =>
+      useGroupedBookings(problematicBookings)
+    );
 
     expect(result.current.unpaid).toHaveLength(1);
     expect(result.current.unpaid[0].id).toBe('1');

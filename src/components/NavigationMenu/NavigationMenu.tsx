@@ -4,12 +4,12 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
 import { toast } from 'sonner';
+import { getMenuItems } from '@/config/navigationMenuConfig';
 export default function NavigationMenu() {
   const pathname = usePathname();
   const router = useRouter();
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const { isAuthorized, logout } = useAuth();
-
   const handleLogout = async () => {
     try {
       await logout();
@@ -18,36 +18,23 @@ export default function NavigationMenu() {
       toast.error(`Ошибка при выходе: ${error}`);
     }
   };
-
-  const handleMyTicketsClick =  (e: React.MouseEvent) => {
-    if (!isAuthorized) {    
+  const handleMyTicketsClick = (e: React.MouseEvent) => {
+    if (!isAuthorized) {
       e.preventDefault();
-      toast.error('Для доступа к странице "Мои билеты" необходимо авторизоваться');
-      router.push('/auth/login'); 
+      toast.error(
+        'Для доступа к странице "Мои билеты" необходимо авторизоваться'
+      );
+      router.push('/auth/login');
     }
   };
-
-  const menuItems = [
-    { href: '/', label: 'Фильмы', icon: '🎬' },
-    { href: '/cinema/cinemas', label: 'Кинотеатры', icon: '🏛️' },
-    {
-      href: '/my-tickets',
-      label: 'Мои билеты',
-      icon: '🎫',
-      onClick: handleMyTicketsClick,
-    },
-    {
-      href: isAuthorized ? '#' : '/auth/login',
-      label: isAuthorized ? 'Выход' : 'Вход',
-      icon: isAuthorized ? '🚪' : '👤',
-      onClick: isAuthorized ? handleLogout : undefined,
-    },
-  ];
-
   const isActive = (href: string) => {
     return pathname === href || pathname.startsWith(href + '/');
   };
-
+  const menuItems = getMenuItems(
+    isAuthorized,
+    handleMyTicketsClick,
+    handleLogout
+  );
   return (
     <div className="flex flex-col min-h-dvh bg-gradient-to-b from-gray-900 to-gray-800 p-6 rounded-xl shadow-2xl border border-gray-700 min-w-[300px]">
       <Link href={'/'} className="mb-8 pb-4 border-b border-gray-700">
@@ -68,19 +55,22 @@ export default function NavigationMenu() {
                 flex items-center gap-3 px-4 py-3 rounded-lg
                 transition-all duration-300 ease-in-out
                 group relative
-                ${active
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/25'
-                  : 'text-gray-300 hover:text-white hover:bg-gray-700/50'
+                ${
+                  active
+                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/25'
+                    : 'text-gray-300 hover:text-white hover:bg-gray-700/50'
                 }
               `}
               onMouseEnter={() => setHoveredItem(item.href)}
               onMouseLeave={() => setHoveredItem(null)}
               onClick={item.onClick}
             >
-              <span className={`
+              <span
+                className={`
                 text-lg transition-transform duration-300
                 ${active || hoveredItem === item.href ? 'scale-110' : 'scale-100'}
-              `}>
+              `}
+              >
                 {item.icon}
               </span>
               <span className="font-medium transition-all duration-300">

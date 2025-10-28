@@ -1,6 +1,6 @@
 import { getCinemas, getMovieSession, getMovies } from '@/lib/api/endpoints';
 import BookingClient from '@/components/BookingClient/BookingClient';
-    
+
 interface BookingPageProps {
   params: {
     sessionId: string;
@@ -9,15 +9,22 @@ interface BookingPageProps {
 
 export default async function BookingPage({ params }: BookingPageProps) {
   const { sessionId } = params;
-  let movie 
-  let cinema 
+  let movie;
+  let cinema;
   try {
     const session = await getMovieSession(sessionId);
-    const movies =  await getMovies();
+    const movies = await getMovies();
     const allCinemas = await getCinemas();
-    cinema = allCinemas.find(c => c.id === session.cinemaId);
-    movie = movies.find(m => m.id === session.movieId);
-    return <BookingClient cinema={cinema} movie={movie} session={session} sessionId={sessionId} />;
+    cinema = allCinemas.find((c) => c.id === session.cinemaId);
+    movie = movies.find((m) => m.id === session.movieId);
+    return (
+      <BookingClient
+        cinema={cinema}
+        movie={movie}
+        session={session}
+        sessionId={sessionId}
+      />
+    );
   } catch (error) {
     return (
       <div className="min-h-screen bg-gray-50 p-8 w-full">

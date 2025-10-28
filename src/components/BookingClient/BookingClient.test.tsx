@@ -8,17 +8,21 @@ import { SessionInfo } from '@/types/booking';
 import { Cinema } from '@/types/cinema';
 import { Movie } from '@/types/movie';
 
-
 jest.mock('next/navigation');
 jest.mock('../../providers/AuthProvider');
 jest.mock('../../lib/api/endpoints');
-jest.mock('../../components/ui/UnauthorizedWarning/UnauthorizedWarning', () => ({
-  __esModule: true,
-  default: () => <div data-testid="unauthorized-warning">Unauthorized Warning</div>
-}));
+jest.mock(
+  '../../components/ui/UnauthorizedWarning/UnauthorizedWarning',
+  () => ({
+    __esModule: true,
+    default: () => (
+      <div data-testid="unauthorized-warning">Unauthorized Warning</div>
+    ),
+  })
+);
 jest.mock('../../components/SeatsLegend/SeatsLegend', () => ({
   __esModule: true,
-  default: () => <div data-testid="seats-legend">Seats Legend</div>
+  default: () => <div data-testid="seats-legend">Seats Legend</div>,
 }));
 
 const mockedUseRouter = useRouter as jest.MockedFunction<typeof useRouter>;
@@ -30,41 +34,35 @@ const mockSession: SessionInfo = {
   movieId: 1,
   cinemaId: 1,
   startTime: new Date('2024-01-01T18:00:00Z').toISOString(),
-  seats: { 
-    rows: 2, 
-    seatsPerRow: 3 
+  seats: {
+    rows: 2,
+    seatsPerRow: 3,
   },
-  bookedSeats: [
-    { rowNumber: 1, seatNumber: 1 }
-  ]
+  bookedSeats: [{ rowNumber: 1, seatNumber: 1 }],
 };
 
-const mockMovie: Movie = { 
-  id: 1, 
+const mockMovie: Movie = {
+  id: 1,
   title: 'Test Movie',
   description: 'Test Description',
   lengthMinutes: 120,
   posterImage: 'poster.jpg',
   rating: 10,
-  year: 1995
+  year: 1995,
 };
 
-const mockCinema: Cinema = { 
-  id: 1, 
+const mockCinema: Cinema = {
+  id: 1,
   name: 'Test Cinema',
   address: 'Test Address',
-
 };
-
-
-
 
 describe('BookingClient', () => {
   const mockPush = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockedUseRouter.mockReturnValue({ 
+    mockedUseRouter.mockReturnValue({
       push: mockPush,
       back: jest.fn(),
       forward: jest.fn(),
@@ -79,11 +77,11 @@ describe('BookingClient', () => {
 
   it('renders booking page with session info', () => {
     render(
-      <BookingClient 
-        session={mockSession} 
-        sessionId="123" 
-        movie={mockMovie} 
-        cinema={mockCinema} 
+      <BookingClient
+        session={mockSession}
+        sessionId="123"
+        movie={mockMovie}
+        cinema={mockCinema}
       />
     );
 
@@ -96,66 +94,69 @@ describe('BookingClient', () => {
   it('shows seats grid and allows selection', async () => {
     const user = userEvent.setup();
     render(
-      <BookingClient 
-        session={mockSession} 
-        sessionId="123" 
-        movie={mockMovie} 
-        cinema={mockCinema} 
+      <BookingClient
+        session={mockSession}
+        sessionId="123"
+        movie={mockMovie}
+        cinema={mockCinema}
       />
     );
 
     expect(screen.getByText('ряд 1')).toBeTruthy();
     expect(screen.getByText('ряд 2')).toBeTruthy();
 
-
     const availableSeats = screen.getAllByText('1');
-    const secondRowFirstSeat = availableSeats[1]; 
-    
+    const secondRowFirstSeat = availableSeats[1];
+
     await user.click(secondRowFirstSeat);
-    
+
     const selectedSeatsCount = screen.getByText((content, element) => {
-      return element?.tagName.toLowerCase() === 'span' && 
-             element?.textContent === '1' &&
-             element?.parentElement?.textContent?.includes('Выбрано мест');
+      return (
+        element?.tagName.toLowerCase() === 'span' &&
+        element?.textContent === '1' &&
+        element?.parentElement?.textContent?.includes('Выбрано мест')
+      );
     });
-    
+
     expect(selectedSeatsCount).toBeTruthy();
   });
 
   it('prevents selecting booked seats', async () => {
     const user = userEvent.setup();
     render(
-      <BookingClient 
-        session={mockSession} 
-        sessionId="123" 
-        movie={mockMovie} 
-        cinema={mockCinema} 
+      <BookingClient
+        session={mockSession}
+        sessionId="123"
+        movie={mockMovie}
+        cinema={mockCinema}
       />
     );
 
     const bookedSeats = screen.getAllByText('1');
-    const firstRowFirstSeat = bookedSeats[0]; 
-    
+    const firstRowFirstSeat = bookedSeats[0];
+
     await user.click(firstRowFirstSeat);
 
     const selectedSeatsCount = screen.getByText((content, element) => {
-      return element?.tagName.toLowerCase() === 'span' && 
-             element?.textContent === '0' &&
-             element?.parentElement?.textContent?.includes('Выбрано мест');
+      return (
+        element?.tagName.toLowerCase() === 'span' &&
+        element?.textContent === '0' &&
+        element?.parentElement?.textContent?.includes('Выбрано мест')
+      );
     });
-    
+
     expect(selectedSeatsCount).toBeTruthy();
   });
 
   it('shows warning for unauthorized users', () => {
     mockedUseAuth.mockReturnValue({ isAuthorized: false } as any);
-    
+
     render(
-      <BookingClient 
-        session={mockSession} 
-        sessionId="123" 
-        movie={mockMovie} 
-        cinema={mockCinema} 
+      <BookingClient
+        session={mockSession}
+        sessionId="123"
+        movie={mockMovie}
+        cinema={mockCinema}
       />
     );
 
@@ -167,11 +168,11 @@ describe('BookingClient', () => {
     mockedUseAuth.mockReturnValue({ isAuthorized: false } as any);
 
     render(
-      <BookingClient 
-        session={mockSession} 
-        sessionId="123" 
-        movie={mockMovie} 
-        cinema={mockCinema} 
+      <BookingClient
+        session={mockSession}
+        sessionId="123"
+        movie={mockMovie}
+        cinema={mockCinema}
       />
     );
 
@@ -182,11 +183,11 @@ describe('BookingClient', () => {
   it('shows alert when no seats selected', async () => {
     const user = userEvent.setup();
     render(
-      <BookingClient 
-        session={mockSession} 
-        sessionId="123" 
-        movie={mockMovie} 
-        cinema={mockCinema} 
+      <BookingClient
+        session={mockSession}
+        sessionId="123"
+        movie={mockMovie}
+        cinema={mockCinema}
       />
     );
 
@@ -197,23 +198,22 @@ describe('BookingClient', () => {
   it('handles successful booking', async () => {
     const user = userEvent.setup();
     render(
-      <BookingClient 
-        session={mockSession} 
-        sessionId="123" 
-        movie={mockMovie} 
-        cinema={mockCinema} 
+      <BookingClient
+        session={mockSession}
+        sessionId="123"
+        movie={mockMovie}
+        cinema={mockCinema}
       />
     );
 
-
     const availableSeats = screen.getAllByText('1');
     const secondRowFirstSeat = availableSeats[1];
-    
+
     await user.click(secondRowFirstSeat);
     await user.click(screen.getByText('Забронировать'));
 
     expect(mockedBookSeats).toHaveBeenCalledWith('123', {
-      seats: [{ rowNumber: 2, seatNumber: 1 }]
+      seats: [{ rowNumber: 2, seatNumber: 1 }],
     });
 
     await waitFor(() => {
@@ -230,17 +230,17 @@ describe('BookingClient', () => {
     mockedBookSeats.mockReturnValue(bookingPromise as any);
 
     render(
-      <BookingClient 
-        session={mockSession} 
-        sessionId="123" 
-        movie={mockMovie} 
-        cinema={mockCinema} 
+      <BookingClient
+        session={mockSession}
+        sessionId="123"
+        movie={mockMovie}
+        cinema={mockCinema}
       />
     );
 
     const availableSeats = screen.getAllByText('1');
     const secondRowFirstSeat = availableSeats[1];
-    
+
     await user.click(secondRowFirstSeat);
     await user.click(screen.getByText('Забронировать'));
 

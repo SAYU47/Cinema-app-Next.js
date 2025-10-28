@@ -1,20 +1,25 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import MyTicketsPage from './page'; 
+import MyTicketsPage from './page';
 import { useAuth } from '@/providers/AuthProvider';
-import { useBookings, useBookingTimer, useGroupedBookings } from '@/hooks/useBookings';
+import {
+  useBookings,
+  useBookingTimer,
+  useGroupedBookings,
+} from '@/hooks/useBookings';
 import { payForBooking } from '@/lib/api/endpoints';
 import { BookingWithMovieInfo } from '@/types/booking';
-
 
 jest.mock('../../providers/AuthProvider');
 jest.mock('../../hooks/useBookings');
 jest.mock('../../lib/api/endpoints');
 jest.mock('../../components/MyTiketsComponents/AuthorizationMessage', () => ({
-  AuthorizationMessage: () => <div data-testid="auth-message">Authorization Required</div>
+  AuthorizationMessage: () => (
+    <div data-testid="auth-message">Authorization Required</div>
+  ),
 }));
 jest.mock('../../components/MyTiketsComponents/LoadingState', () => ({
-  LoadingState: () => <div data-testid="loading-state">Loading...</div>
+  LoadingState: () => <div data-testid="loading-state">Loading...</div>,
 }));
 jest.mock('../../components/MyTiketsComponents/TicketsSection', () => ({
   TicketsSection: ({ title, bookings, showPayButton, onPayment }: any) => (
@@ -29,17 +34,26 @@ jest.mock('../../components/MyTiketsComponents/TicketsSection', () => ({
         </button>
       )}
     </div>
-  )
+  ),
 }));
 
 const mockedUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
-const mockedUseBookings = useBookings as jest.MockedFunction<typeof useBookings>;
-const mockedUseBookingTimer = useBookingTimer as jest.MockedFunction<typeof useBookingTimer>;
-const mockedUseGroupedBookings = useGroupedBookings as jest.MockedFunction<typeof useGroupedBookings>;
-const mockedPayForBooking = payForBooking as jest.MockedFunction<typeof payForBooking>;
+const mockedUseBookings = useBookings as jest.MockedFunction<
+  typeof useBookings
+>;
+const mockedUseBookingTimer = useBookingTimer as jest.MockedFunction<
+  typeof useBookingTimer
+>;
+const mockedUseGroupedBookings = useGroupedBookings as jest.MockedFunction<
+  typeof useGroupedBookings
+>;
+const mockedPayForBooking = payForBooking as jest.MockedFunction<
+  typeof payForBooking
+>;
 
-
-const createMockBooking = (overrides: Partial<BookingWithMovieInfo> = {}): BookingWithMovieInfo => ({
+const createMockBooking = (
+  overrides: Partial<BookingWithMovieInfo> = {}
+): BookingWithMovieInfo => ({
   id: '1',
   userId: 1,
   movieSessionId: 1,
@@ -51,34 +65,31 @@ const createMockBooking = (overrides: Partial<BookingWithMovieInfo> = {}): Booki
   cinemaName: 'Test Cinema',
   timeLeft: 900,
   isExpired: false,
-  ...overrides
+  ...overrides,
 });
 
 describe('MyTicketsPage', () => {
   const mockSetBookings = jest.fn();
-  
+
   beforeEach(() => {
     jest.clearAllMocks();
-    
 
     mockedUseAuth.mockReturnValue({ isAuthorized: true } as any);
-    
 
     mockedUseBookings.mockReturnValue({
       bookings: [],
       isLoading: false,
-      setBookings: mockSetBookings
+      setBookings: mockSetBookings,
     });
-    
 
     mockedUseBookingTimer.mockImplementation(() => {});
 
     mockedUseGroupedBookings.mockReturnValue({
       unpaid: [],
       upcoming: [],
-      past: []
+      past: [],
     });
-    
+
     window.alert = jest.fn();
   });
 
@@ -94,7 +105,7 @@ describe('MyTicketsPage', () => {
     mockedUseBookings.mockReturnValue({
       bookings: [],
       isLoading: true,
-      setBookings: mockSetBookings
+      setBookings: mockSetBookings,
     });
 
     render(<MyTicketsPage />);
@@ -106,26 +117,26 @@ describe('MyTicketsPage', () => {
     const mockBookings = [
       createMockBooking({ id: '1', isPaid: false }),
       createMockBooking({ id: '2', isPaid: true }),
-      createMockBooking({ id: '3', isPaid: true })
+      createMockBooking({ id: '3', isPaid: true }),
     ];
 
     mockedUseBookings.mockReturnValue({
       bookings: mockBookings,
       isLoading: false,
-      setBookings: mockSetBookings
+      setBookings: mockSetBookings,
     });
 
     mockedUseGroupedBookings.mockReturnValue({
       unpaid: [mockBookings[0]],
       upcoming: [mockBookings[1]],
-      past: [mockBookings[2]]
+      past: [mockBookings[2]],
     });
 
     render(<MyTicketsPage />);
 
     expect(screen.getByText('Мои билеты')).toBeTruthy();
     expect(screen.getByText('Управление вашими бронированиями')).toBeTruthy();
-    
+
     expect(screen.getByTestId('tickets-section-неоплаченные')).toBeTruthy();
     expect(screen.getByTestId('tickets-section-будущие сеансы')).toBeTruthy();
     expect(screen.getByTestId('tickets-section-прошедшие сеансы')).toBeTruthy();
@@ -138,13 +149,13 @@ describe('MyTicketsPage', () => {
     mockedUseBookings.mockReturnValue({
       bookings: mockBookings,
       isLoading: false,
-      setBookings: mockSetBookings
+      setBookings: mockSetBookings,
     });
 
     mockedUseGroupedBookings.mockReturnValue({
       unpaid: mockBookings,
       upcoming: [],
-      past: []
+      past: [],
     });
 
     mockedPayForBooking.mockResolvedValue({} as any);
@@ -164,13 +175,13 @@ describe('MyTicketsPage', () => {
     mockedUseBookings.mockReturnValue({
       bookings: mockBookings,
       isLoading: false,
-      setBookings: mockSetBookings
+      setBookings: mockSetBookings,
     });
 
     mockedUseGroupedBookings.mockReturnValue({
       unpaid: mockBookings,
       upcoming: [],
-      past: []
+      past: [],
     });
 
     const mockError = new Error('Payment failed');
@@ -187,19 +198,19 @@ describe('MyTicketsPage', () => {
     const mockBookings = [
       createMockBooking({ id: '1', isPaid: false }),
       createMockBooking({ id: '2', isPaid: true }),
-      createMockBooking({ id: '3', isPaid: true })
+      createMockBooking({ id: '3', isPaid: true }),
     ];
 
     mockedUseBookings.mockReturnValue({
       bookings: mockBookings,
       isLoading: false,
-      setBookings: mockSetBookings
+      setBookings: mockSetBookings,
     });
 
     mockedUseGroupedBookings.mockReturnValue({
       unpaid: [mockBookings[0]],
       upcoming: [mockBookings[1]],
-      past: [mockBookings[2]]
+      past: [mockBookings[2]],
     });
 
     render(<MyTicketsPage />);
@@ -216,25 +227,25 @@ describe('MyTicketsPage', () => {
   it('shows pay button only for unpaid bookings', () => {
     const mockBookings = [
       createMockBooking({ id: '1', isPaid: false }),
-      createMockBooking({ id: '2', isPaid: true })
+      createMockBooking({ id: '2', isPaid: true }),
     ];
 
     mockedUseBookings.mockReturnValue({
       bookings: mockBookings,
       isLoading: false,
-      setBookings: mockSetBookings
+      setBookings: mockSetBookings,
     });
 
     mockedUseGroupedBookings.mockReturnValue({
       unpaid: [mockBookings[0]],
       upcoming: [mockBookings[1]],
-      past: []
+      past: [],
     });
 
     render(<MyTicketsPage />);
 
     expect(screen.getByText('Pay 1')).toBeTruthy();
-    
+
     const payButtons = screen.getAllByText(/Pay/);
     expect(payButtons).toHaveLength(1);
   });

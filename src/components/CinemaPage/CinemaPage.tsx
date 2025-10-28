@@ -1,10 +1,10 @@
-import { getMoviePosterUrl } from "@/lib/utils/movieUtils";
-import { SesionsByIdResponse } from "@/types/endpoints";
-import { Cinema, CinemaSession } from "@/types/cinema";
-import { Movie } from "@/types/movie";
-import Image from "next/image";
-import Link from "next/link";
-import { JSX } from "react";
+import { getMoviePosterUrl } from '@/lib/utils/movieUtils';
+import { SesionsByIdResponse } from '@/types/endpoints';
+import { Cinema, CinemaSession } from '@/types/cinema';
+import { Movie } from '@/types/movie';
+import Image from 'next/image';
+import Link from 'next/link';
+import { JSX } from 'react';
 
 type GroupedSessions = Record<string, SesionsByIdResponse[]>;
 
@@ -15,7 +15,9 @@ interface CinemaPageProps {
   movies: Movie[];
 }
 
-const groupSessionsByMovie = (sessions: SesionsByIdResponse[]): GroupedSessions => {
+const groupSessionsByMovie = (
+  sessions: SesionsByIdResponse[]
+): GroupedSessions => {
   const grouped: GroupedSessions = {};
 
   sessions.forEach((session) => {
@@ -31,7 +33,12 @@ const groupSessionsByMovie = (sessions: SesionsByIdResponse[]): GroupedSessions 
   return grouped;
 };
 
-const CinemaPage = ({ cinema, groupedSessions, upcomingSessions, movies }: CinemaPageProps): JSX.Element => {
+const CinemaPage = ({
+  cinema,
+  groupedSessions,
+  upcomingSessions,
+  movies,
+}: CinemaPageProps): JSX.Element => {
   return (
     <>
       <div className="bg-white rounded-xl shadow-lg p-2 mb-2">
@@ -49,9 +56,7 @@ const CinemaPage = ({ cinema, groupedSessions, upcomingSessions, movies }: Cinem
 
       <div className="bg-white rounded-xl shadow-lg p-8">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">
-            Ближайшие сеансы
-          </h2>
+          <h2 className="text-2xl font-bold text-gray-900">Ближайшие сеансы</h2>
           <span className="text-sm text-gray-500">
             Всего сеансов: {upcomingSessions.length}
           </span>
@@ -64,9 +69,7 @@ const CinemaPage = ({ cinema, groupedSessions, upcomingSessions, movies }: Cinem
                 key={date}
                 className="border-b border-gray-200 pb-6 last:border-b-0"
               >
-                <h3 className="text-xl font-bold text-gray-800 mb-4">
-                  {date}
-                </h3>
+                <h3 className="text-xl font-bold text-gray-800 mb-4">{date}</h3>
 
                 <div className="border-t border-gray-300 mb-4"></div>
 
@@ -112,12 +115,13 @@ const CinemaPage = ({ cinema, groupedSessions, upcomingSessions, movies }: Cinem
                               className="inline-flex flex-col items-center justify-center h-fit p-2   bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 hover:border-blue-300 transition-all duration-200 min-w-[100px] "
                             >
                               <span className="text-lg font-bold text-blue-700 group-hover:text-blue-800">
-                                {new Date(
-                                  session.startTime
-                                ).toLocaleTimeString("ru-RU", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })}
+                                {new Date(session.startTime).toLocaleTimeString(
+                                  'ru-RU',
+                                  {
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                  }
+                                )}
                               </span>
                             </Link>
                           ))}

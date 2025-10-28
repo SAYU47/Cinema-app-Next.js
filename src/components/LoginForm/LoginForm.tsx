@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import Input from "@/components/ui/Input/Input";
-import { loginSchema, LoginFormData } from "@/lib/validation-schema";
-import CustomButton from "@/components/ui/CustomButton/CustomButton";
-import { useLoginMutation } from "@/hooks/apiHooks";
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import Input from '@/components/ui/Input/Input';
+import { loginSchema, LoginFormData } from '@/lib/validation-schema';
+import CustomButton from '@/components/ui/CustomButton/CustomButton';
+import { useLoginMutation } from '@/hooks/apiHooks';
 import { useAuth } from '@/providers/AuthProvider';
-import { toast } from "sonner";
+import { toast } from 'sonner';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -24,8 +24,8 @@ export default function LoginPage() {
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: "",
-      password: "",
+      username: '',
+      password: '',
     },
   });
 
@@ -33,13 +33,10 @@ export default function LoginPage() {
     try {
       const result = await loginMutation.mutateAsync(data);
 
-
       login(data.username, result.token);
 
-      router.push("/my-tickets");
-      
+      router.push('/my-tickets');
     } catch (err) {
-
       toast.error(`Login error: ${err}`);
     }
   };
@@ -65,7 +62,7 @@ export default function LoginPage() {
           {/* Поле username */}
           <Input
             label="Логин"
-            {...register("username")}
+            {...register('username')}
             error={errors.username}
             fullWidth
             placeholder="Введите ваш логин"
@@ -77,7 +74,7 @@ export default function LoginPage() {
           <Input
             label="Пароль"
             type="password"
-            {...register("password")}
+            {...register('password')}
             error={errors.password}
             fullWidth
             placeholder="Введите ваш пароль"
@@ -86,12 +83,12 @@ export default function LoginPage() {
           />
 
           {/* Кнопка отправки */}
-          <CustomButton 
-            type="submit" 
+          <CustomButton
+            type="submit"
             isLoading={isLoading}
             disabled={isLoading}
           >
-            {isLoading ? "Вход..." : "Войти"}
+            {isLoading ? 'Вход...' : 'Войти'}
           </CustomButton>
 
           {/* Ошибка сервера */}
@@ -113,8 +110,6 @@ export default function LoginPage() {
               </div>
             </div>
           )}
-
-          {/* Успешный вход */}
           {loginMutation.isSuccess && (
             <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-xl">
               <div className="flex items-center gap-2 text-green-400">
@@ -134,10 +129,10 @@ export default function LoginPage() {
             </div>
           )}
         </form>
-            
+
         <div className="mt-6 text-center">
           <p className="text-gray-400 text-sm">
-            Нет аккаунта?{" "}
+            Нет аккаунта?{' '}
             <Link
               href="/auth/register"
               className="text-purple-400 hover:text-purple-300 transition-colors duration-300 font-semibold"

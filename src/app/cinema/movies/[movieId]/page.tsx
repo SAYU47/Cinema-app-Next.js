@@ -11,7 +11,9 @@ interface MovieDetailsPageProps {
   };
 }
 
-export default async function MovieDetailsPage({ params }: MovieDetailsPageProps) {
+export default async function MovieDetailsPage({
+  params,
+}: MovieDetailsPageProps) {
   const movieId = params.movieId;
 
   let movie: Movie | undefined;
@@ -22,9 +24,9 @@ export default async function MovieDetailsPage({ params }: MovieDetailsPageProps
   try {
     [sessions, cinemas] = await Promise.all([
       getSessionsById(movieId),
-      getCinemas()
+      getCinemas(),
     ]);
-    
+
     const movies = await getMovies();
     movie = movies.find((m) => m.id === Number(movieId));
   } catch (err) {
@@ -47,10 +49,6 @@ export default async function MovieDetailsPage({ params }: MovieDetailsPageProps
   }
 
   return (
-    <MovieDetailsClient 
-      movie={movie}
-      sessions={sessions}
-      cinemas={cinemas}
-    />
+    <MovieDetailsClient movie={movie} sessions={sessions} cinemas={cinemas} />
   );
 }

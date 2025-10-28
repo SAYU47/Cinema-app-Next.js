@@ -1,20 +1,17 @@
-"use client";
-
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import Input from "@/components/ui/Input/Input";
-import { registerSchema, RegisterFormData } from "@/lib/validation-schema";
-import CustomButton from "@/components/ui/CustomButton/CustomButton";
-import { useLoginMutation, useRegisterMutation } from "@/hooks/apiHooks";
-import { useAuth } from "@/providers/AuthProvider";
+'use client';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import Input from '@/components/ui/Input/Input';
+import { registerSchema, RegisterFormData } from '@/lib/validation-schema';
+import CustomButton from '@/components/ui/CustomButton/CustomButton';
+import { useLoginMutation, useRegisterMutation } from '@/hooks/apiHooks';
+import { useAuth } from '@/providers/AuthProvider';
 
 export default function RegisterForm() {
   const router = useRouter();
   const { login } = useAuth();
-
-
   const registerMutation = useRegisterMutation();
   const loginMutation = useLoginMutation();
   const {
@@ -24,9 +21,9 @@ export default function RegisterForm() {
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      username: "",
-      password: "",
-      confirmPassword: "",
+      username: '',
+      password: '',
+      confirmPassword: '',
     },
   });
 
@@ -35,9 +32,9 @@ export default function RegisterForm() {
       await registerMutation.mutateAsync(data);
       const result = await loginMutation.mutateAsync(data);
       login(data.username, result.token);
-      router.push("/my-tickets");
+      router.push('/my-tickets');
     } catch (err) {
-      console.error("Registration error:", err);
+      console.error('Registration error:', err);
     }
   };
 
@@ -58,7 +55,7 @@ export default function RegisterForm() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <Input
             label="Логин"
-            {...register("username")}
+            {...register('username')}
             error={errors.username}
             fullWidth
             placeholder="Придумайте логин"
@@ -69,7 +66,7 @@ export default function RegisterForm() {
           <Input
             label="Пароль"
             type="password"
-            {...register("password")}
+            {...register('password')}
             error={errors.password}
             fullWidth
             placeholder="Придумайте пароль"
@@ -80,7 +77,7 @@ export default function RegisterForm() {
           <Input
             label="Повторите пароль"
             type="password"
-            {...register("confirmPassword")}
+            {...register('confirmPassword')}
             error={errors.confirmPassword}
             fullWidth
             placeholder="Повторите ваш пароль"
@@ -93,7 +90,7 @@ export default function RegisterForm() {
             isLoading={isLoading}
             disabled={isLoading}
           >
-            {isLoading ? "Регистрация..." : "Зарегистрироваться"}
+            {isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
           </CustomButton>
 
           {serverError && (
@@ -139,7 +136,7 @@ export default function RegisterForm() {
 
         <div className="mt-6 text-center">
           <p className="text-gray-400 text-sm">
-            Уже есть аккаунт?{" "}
+            Уже есть аккаунт?{' '}
             <Link
               href="/auth/login"
               className="text-purple-400 hover:text-purple-300 transition-colors duration-300 font-semibold"

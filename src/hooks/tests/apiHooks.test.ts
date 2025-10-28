@@ -6,12 +6,10 @@ import { registerUser, loginUser } from '@/lib/api/endpoints';
 import { RegisterFormData } from '@/lib/validation-schema';
 import React from 'react';
 
-
 jest.mock('../../lib/api/endpoints', () => ({
   registerUser: jest.fn(),
   loginUser: jest.fn(),
 }));
-
 
 const localStorageMock = {
   getItem: jest.fn(),
@@ -21,7 +19,6 @@ const localStorageMock = {
 };
 Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 
-
 const createWrapper = () => {
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -29,7 +26,6 @@ const createWrapper = () => {
       mutations: { retry: false },
     },
   });
-  
 
   const Wrapper = ({ children }: { children: ReactNode }) => {
     return React.createElement(
@@ -38,7 +34,7 @@ const createWrapper = () => {
       children
     );
   };
-  
+
   return Wrapper;
 };
 
@@ -59,7 +55,7 @@ describe('useRegisterMutation', () => {
       username: 'testuser',
       message: 'Регистрация успешна',
     };
-    
+
     (registerUser as jest.Mock).mockResolvedValue(mockResponse);
 
     const { result } = renderHook(() => useRegisterMutation(), {
@@ -125,7 +121,10 @@ describe('useLoginMutation', () => {
     });
 
     expect(result.current.data).toEqual(mockResponse);
-    expect(localStorageMock.setItem).toHaveBeenCalledWith('authToken', 'fake-token');
+    expect(localStorageMock.setItem).toHaveBeenCalledWith(
+      'authToken',
+      'fake-token'
+    );
   });
 
   it('должен вернуть ошибку при неудачном входе', async () => {

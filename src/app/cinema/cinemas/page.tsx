@@ -35,18 +35,26 @@ export default async function CinemasPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b bg-gray-50">
-                  <th className="text-left py-3 px-4 font-semibold text-gray-700">Кинотеатр</th>
-                  <th className="text-left py-3 px-4 font-semibold text-gray-700">Адрес</th>
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                    Кинотеатр
+                  </th>
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                    Адрес
+                  </th>
                   <th className="text-left py-3 px-4 font-semibold text-gray-700"></th>
                 </tr>
               </thead>
               <tbody>
                 {cinemas?.map((cinema) => (
                   <tr key={cinema.id} className=" hover:bg-gray-50">
-                    <td className="py-3 px-4 font-medium text-gray-900">{cinema.name}</td>
-                    <td className="py-3 px-4 text-gray-600">{cinema.address}</td>
+                    <td className="py-3 px-4 font-medium text-gray-900">
+                      {cinema.name}
+                    </td>
+                    <td className="py-3 px-4 text-gray-600">
+                      {cinema.address}
+                    </td>
                     <td className="py-3 px-4 text-right">
-                      <Link 
+                      <Link
                         href={`/cinema/cinemas/${cinema.id}`}
                         className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm font-medium"
                       >

@@ -1,10 +1,19 @@
 import { getMovieSession } from '@/lib/api/endpoints';
-import { BookingWithMovieInfo, MyBookingSeats, Settings } from '@/types/booking';
+import {
+  BookingWithMovieInfo,
+  GroupedSessions,
+  MyBookingSeats,
+  Settings,
+} from '@/types/booking';
 import { Movie } from '@/types/movie';
 import { Cinema } from '@/types/cinema';
 import { toast } from 'sonner';
+import { SesionsByIdResponse } from '@/types/endpoints';
 
-export const calculateTimeLeft = (booking: MyBookingSeats, settings: Settings) => {
+export const calculateTimeLeft = (
+  booking: MyBookingSeats,
+  settings: Settings
+) => {
   if (booking.isPaid) return { timeLeft: undefined, isExpired: false };
 
   const bookedAt = new Date(booking.bookedAt).getTime();
@@ -16,30 +25,38 @@ export const calculateTimeLeft = (booking: MyBookingSeats, settings: Settings) =
   return { timeLeft, isExpired };
 };
 
-export const createFallbackBooking = (booking: MyBookingSeats): BookingWithMovieInfo => ({
+export const createFallbackBooking = (
+  booking: MyBookingSeats
+): BookingWithMovieInfo => ({
   ...booking,
   movieSessionInfo: undefined,
   movieTitle: `Фильм #${booking.movieSessionId}`,
   cinemaName: 'Кинотеатр',
   timeLeft: undefined,
-  isExpired: false
+  isExpired: false,
 });
 
 export const enrichBookingsWithDetails = async (
-  bookingsResponse: MyBookingSeats[], 
-  moviesResponse: Movie[], 
-  cinemasResponse: Cinema[], 
+  bookingsResponse: MyBookingSeats[],
+  moviesResponse: Movie[],
+  cinemasResponse: Cinema[],
   settingsResponse: Settings
 ): Promise<any[]> => {
-  console.log(bookingsResponse)
   return await Promise.all(
     bookingsResponse.map(async (booking: MyBookingSeats) => {
       try {
         const movieSessionInfo = await getMovieSession(booking.movieSessionId);
-        const movie = moviesResponse.find((m: Movie) => m.id === movieSessionInfo.movieId);
-        const cinema = cinemasResponse.find((c: Cinema) => c.id === movieSessionInfo.cinemaId);
-        
-        const { timeLeft, isExpired } = calculateTimeLeft(booking, settingsResponse);
+        const movie = moviesResponse.find(
+          (m: Movie) => m.id === movieSessionInfo.movieId
+        );
+        const cinema = cinemasResponse.find(
+          (c: Cinema) => c.id === movieSessionInfo.cinemaId
+        );
+
+        const { timeLeft, isExpired } = calculateTimeLeft(
+          booking,
+          settingsResponse
+        );
 
         return {
           ...booking,
@@ -47,7 +64,7 @@ export const enrichBookingsWithDetails = async (
           movieTitle: movie?.title || `Фильм #${movieSessionInfo.movieId}`,
           cinemaName: cinema?.name || `Кинотеатр #${movieSessionInfo.cinemaId}`,
           timeLeft,
-          isExpired
+          isExpired,
         };
       } catch (error) {
         toast.error(`Ошибка загрузки сеанса ${booking.movieSessionId}:`);
@@ -60,9 +77,48 @@ export const enrichBookingsWithDetails = async (
 export const getEmptyMessage = (section: string) => {
   const messages = {
     unpaid: '🎉 Нет неоплаченных билетов',
-    upcoming: '📋 У вас нет предстоящих сеансов', 
-    past: '🕒 У вас еще нет прошедших сеансов'
+    upcoming: '📋 У вас нет предстоящих сеансов',
+    past: '🕒 У вас еще нет прошедших сеансов',
   };
-  
+
   return messages[section as keyof typeof messages] || 'Нет данных';
+};
+
+export const groupSessionsByDate = (
+  sessions: SesionsByIdResponse[]
+): { [key: string]: SesionsByIdResponse[] } => {
+  const grouped: { [key: string]: SesionsByIdResponse[] } = {};
+
+  sessions.forEach((session) => {
+    const date = new Date(session.startTime);
+    const dateKey = date.toLocaleDateString('ru-RU', {
+      day: '2-digit',
+      month: '2-digit',
+    });
+
+    if (!grouped[dateKey]) {
+      grouped[dateKey] = [];
+    }
+
+    grouped[dateKey].push(session);
+  });
+
+  return grouped;
+};
+export const groupSessionsByCinema = (
+  sessions: SesionsByIdResponse[]
+): GroupedSessions => {
+  const grouped: GroupedSessions = {};
+
+  sessions.forEach((session) => {
+    const cinemaId = session.cinemaId;
+
+    if (!grouped[cinemaId]) {
+      grouped[cinemaId] = [];
+    }
+
+    grouped[cinemaId].push(session);
+  });
+
+  return grouped;
 };

@@ -1,4 +1,4 @@
-import { BookingSeat } from "./booking";
+import { BookingSeat } from './booking';
 
 export interface RegisterResponse {
   id: string;
