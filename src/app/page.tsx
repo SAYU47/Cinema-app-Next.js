@@ -13,7 +13,7 @@ export default async function Home() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8 w-full">
+      <div className="min-h-screen bg-gray-50 p-8 w-full mt-[60px] min-lg:mt-0">
         <div className="max-w-7xl mx-auto">
           <div className="text-center text-red-600">
             <p>Ошибка при загрузке фильмов: {error.message}</p>
@@ -24,7 +24,7 @@ export default async function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8 w-full">
+    <div className="min-h-screen bg-gray-50 p-8 w-full mt-[60px] min-lg:mt-0">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Все фильмы</h1>

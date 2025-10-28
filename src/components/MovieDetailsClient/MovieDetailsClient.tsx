@@ -39,7 +39,7 @@ export default function MovieDetailsClient({
     upcomingSessions.length > 0 ? groupSessionsByDate(upcomingSessions) : null;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8 w-full">
+    <div className="min-h-screen bg-gray-50 p-8 w-full mt-[60px] min-lg:mt-0">
       <div className="max-w-6xl mx-auto">
         <Link
           href="/cinema/movies"

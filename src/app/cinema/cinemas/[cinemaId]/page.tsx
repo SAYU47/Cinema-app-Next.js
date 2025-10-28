@@ -37,7 +37,7 @@ export default async function CinemaDetailsPage({
 
   if (error || !cinema) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8 w-full">
+      <div className="min-h-screen bg-gray-50 p-8 w-full mt-[60px] min-lg:mt-0">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-2xl font-bold text-red-600 mb-4">
             {error ? `Ошибка: ${error.message}` : 'Кинотеатр не найден'}
@@ -64,7 +64,7 @@ export default async function CinemaDetailsPage({
       : null;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8 w-full">
+    <div className="min-h-screen bg-gray-50 p-8 w-full mt-[60px] min-lg:mt-0">
       <div className="max-w-6xl mx-auto">
         <Link
           href="/cinema/cinemas"
